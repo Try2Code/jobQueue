@@ -37,9 +37,12 @@ puts '#====== PROC   ====================='
 puts '#====== ARRAY  ====================='
             if task.size > 1
 puts '#====== SIMPLE PROC WITH ARG ============'
-              if not task[1].kind_of? Array # Expects proc with arguments
+              if not task[1].kind_of? Array 
+                # Expects proc/lambda with arguments, e.g. [mysqrt,2.789]
                 task[0].call(*task[1..-1])
-              else              # expect an object in task[0] and one of its methods with arguments in task[1]
+              else
+                # expect an object in task[0] and one of its methods with arguments in task[1] as a symbol
+                # e.g. [a,[:attribute=,1]
 puts '#====== OBJECT + METHOD + ARGUEMENTS ===='
                 task[0].send(task[1][0],*task[1][1..-1])
               end
