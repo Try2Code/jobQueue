@@ -6,7 +6,8 @@ require 'jobqueue'
 NTHREDs = ENV['NTHREDs'].nil? ? 4 : ENV['NTHREDs']
 
 class A
-  @i = nil
+  attr_accessor :i,:j,:k
+  @i, @j, @k = nil,nil,nil
   def seti(i)
     @i = i
   end
@@ -15,7 +16,8 @@ end
 class TestJobQueue < Test::Unit::TestCase
 
   def setup
-    @jq = JobQueue.new(NTHREDs)
+    @jq    = JobQueue.new(NTHREDs)
+    @jqSer = JobQueue.new(1)
   end
 
   def test_string
@@ -34,11 +36,39 @@ class TestJobQueue < Test::Unit::TestCase
     @jq.run
   end
   def test_method
-#   a = A.new
-#   assert_equal(nil,a.i)
-#   i = 10
-#   @jq.push([a,[seti,i]])
-#   @jq.run
+    a = A.new
+    assert_equal(nil,a.i)
+    assert_equal(nil,a.j)
+    assert_equal(nil,a.k)
+    i = 10
+    @jq.push([a,[:seti,i]])
+    @jq.run
+    assert_equal(i,a.i)
+    i = 11
+    @jq.push([a,[:seti,i]])
+    @jq.run
+    assert_equal(i,a.i)
+  end
+  def test_accessor
+    a = A.new
+    assert_equal(nil,a.i)
+    assert_equal(nil,a.j)
+    assert_equal(nil,a.k)
+    # try ruby style accessors
+    @jqSer.push([a,[:i=,1]])
+    @jqSer.push([a,[:j=,2]])
+    @jqSer.push([a,[:k=,3]])
+    @jqSer.run
+    assert_equal(1,a.i)
+    assert_equal(2,a.j)
+    assert_equal(3,a.k)
+    @jq.push([a,[:i=,10]])
+    @jq.push([a,[:j=,20]])
+    @jq.push([a,[:k=,30]])
+    @jq.run
+    assert_equal(10,a.i)
+    assert_equal(20,a.j)
+    assert_equal(30,a.k)
   end
 
   def test_object

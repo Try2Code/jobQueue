@@ -17,7 +17,7 @@ class JobQueue
   end
 
   def push(*items)
-puts '#==================================='
+puts '#== PUSHED ITEMS ==================='
 pp items
     items.each {|it| @queue << it}
   end
@@ -26,16 +26,26 @@ pp items
     @threads = (1..@size).map {|i|
       Thread.new(@queue) {|q|
         until ( q == ( task = q.deq ) )
-          
-puts '#==================================='
-pp task
-          pp task.class
+          $stdout << task.class.to_s
           if task.kind_of? String
+puts '#====== STRING ====================='
             system(task)
           elsif task.kind_of? Proc
+puts '#====== PROC   ====================='
             task.call
           elsif task.kind_of? Array
-            task[0].call(*task[1..-1])
+puts '#====== ARRAY  ====================='
+            if task.size > 1
+puts '#====== SIMPLE PROC WITH ARG ============'
+              if not task[1].kind_of? Array # Expects proc with arguments
+                task[0].call(*task[1..-1])
+              else              # expect an object in task[0] and one of its methods with arguments in task[1]
+puts '#====== OBJECT + METHOD + ARGUEMENTS ===='
+                task[0].send(task[1][0],*task[1][1..-1])
+              end
+            else
+              warn 'provide 2d arrays'
+            end
           end
         end
       }
