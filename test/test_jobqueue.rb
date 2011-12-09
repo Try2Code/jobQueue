@@ -12,6 +12,20 @@ class A
     @i = i
   end
 end
+class B
+  @@val = 0
+  def B.set(val)
+    @@val = val
+  end
+  def B.get
+    @@val
+  end
+end
+module C
+  def C.sqrt(v)
+    Math.sqrt(v)
+  end
+end
 
 class TestJobQueue < Test::Unit::TestCase
 
@@ -71,6 +85,16 @@ class TestJobQueue < Test::Unit::TestCase
     assert_equal(30,a.k)
   end
 
-  def test_object
+  def test_class_methods
+    @jq.push([B,[:set,1]])
+    @jq.run
+    assert_equal(1,B.get)
+  end
+  def test_module
+    @jq.push(C,[:sqrt,10])
+    @jq.push(C,[:sqrt,100])
+    @jq.push(C,[:sqrt,1000])
+    @jq.run
+
   end
 end
