@@ -24,7 +24,6 @@ class JobQueue
     @threads = (1..@size).map {|i|
       Thread.new(@queue) {|q|
         until ( q == ( task = q.deq ) )
-          $stdout << task.class.to_s
           if task.kind_of? String
             system(task)
           elsif task.kind_of? Proc

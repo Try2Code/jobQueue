@@ -91,10 +91,9 @@ class TestJobQueue < Test::Unit::TestCase
     assert_equal(1,B.get)
   end
   def test_module
-    @jq.push(C,[:sqrt,10])
-    @jq.push(C,[:sqrt,100])
-    @jq.push(C,[:sqrt,1000])
+    @jq.push([C,[:sqrt,10]])
+    @jq.push([C,[:sqrt,100]])
+    @jq.push([C,[:sqrt,1000]])
     @jq.run
-
   end
 end
