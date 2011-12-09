@@ -16,7 +16,7 @@ if $0 == __FILE__
   # read file line per line
   lines = File.open(ARGV[1]).readlines.map(&:chomp)
   q = JobQueue.new(noTh)
-  q.push(lines)
+  q.push(*lines)
   q.run
 end
 

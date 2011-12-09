@@ -5,6 +5,13 @@ require 'jobqueue'
 
 NTHREDs = ENV['NTHREDs'].nil? ? 4 : ENV['NTHREDs']
 
+class A
+  @i = nil
+  def seti(i)
+    @i = i
+  end
+end
+
 class TestJobQueue < Test::Unit::TestCase
 
   def setup
@@ -12,15 +19,28 @@ class TestJobQueue < Test::Unit::TestCase
   end
 
   def test_string
-    @jq = JobQueue.new(4)
-    @jq.push(%w[ls]*7)
+    @jq.push(*%w[ls]*7)
     @jq.run
   end
 
-  def test_proc
-    sqrt = lambda {|v| Math.sqrt(v)}
+  def test_proc_simple
     halo = lambda { puts "halo"}
-    @jq.push([halo]*11)
+    @jq.push(*([halo]*11))
     @jq.run
+  end
+  def test_proc
+    sqrt = lambda {|v| puts Math.sqrt(v)}
+    10.times { @jq.push([sqrt,rand])}
+    @jq.run
+  end
+  def test_method
+#   a = A.new
+#   assert_equal(nil,a.i)
+#   i = 10
+#   @jq.push([a,[seti,i]])
+#   @jq.run
+  end
+
+  def test_object
   end
 end

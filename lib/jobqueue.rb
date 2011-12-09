@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'thread'
-
+require 'pp'
 # ==============================================================================
 # Author: Ralf Mueller, ralf.mueller@zmaw.de
 #         suggestions from Robert Klemme (https://www.ruby-forum.com/topic/68001#86298)
@@ -17,6 +17,8 @@ class JobQueue
   end
 
   def push(*items)
+puts '#==================================='
+pp items
     items.each {|it| @queue << it}
   end
 
@@ -25,10 +27,15 @@ class JobQueue
       Thread.new(@queue) {|q|
         until ( q == ( task = q.deq ) )
           
+puts '#==================================='
+pp task
+          pp task.class
           if task.kind_of? String
             system(task)
           elsif task.kind_of? Proc
             task.call
+          elsif task.kind_of? Array
+            task[0].call(*task[1..-1])
           end
         end
       }
