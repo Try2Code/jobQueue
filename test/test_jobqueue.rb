@@ -6,10 +6,18 @@ require 'jobqueue'
 NTHREDs = ENV['NTHREDs'].nil? ? 4 : ENV['NTHREDs']
 
 class A
-  attr_accessor :i,:j,:k
-  @i, @j, @k = nil,nil,nil
+  attr_accessor :i,:j,:k,:h
+  @@lock = Mutex.new
+
+  def initialize
+    @i, @j, @k = nil,nil,nil
+    @h    = {}
+  end
   def seti(i)
     @i = i
+  end
+  def seth(v)
+    @@lock.synchronize{ @h[v] = 2*v}
   end
 end
 class B
@@ -46,7 +54,9 @@ class TestJobQueue < Test::Unit::TestCase
   end
   def test_proc
     sqrt = lambda {|v| puts Math.sqrt(v)}
+    norm = lambda {|x,y| puts Math.sqrt(x*x + y*y)}
     10.times { @jq.push([sqrt,rand])}
+    10.times { @jq.push([norm,rand,rand])}
     @jq.run
   end
   def test_method
@@ -95,5 +105,21 @@ class TestJobQueue < Test::Unit::TestCase
     @jq.push([C,[:sqrt,100]])
     @jq.push([C,[:sqrt,1000]])
     @jq.run
+  end
+  def test_lock
+    lockfill = lambda {|myhash,value,lock|
+      lock.synchronize { myhash[value] = value}
+    }
+    fill = lambda {|myhash,value| myhash[value] = value}
+    a = A.new
+    a.seth(1)
+    assert_equal(2,a.h[1])
+    (0..77).each {|i|
+      @jq.push([a,[:seth,i]])
+    }
+    @jq.run
+    (0..77).each {|i|
+      assert_equal(2*i,a.h[i])
+    }
   end
 end
