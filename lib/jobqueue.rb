@@ -11,15 +11,22 @@ require 'pp'
 class JobQueue
   attr_reader :size, :queue, :threads
 
+  # Create a new queue qith a given number of worker threads
   def initialize(size)
     @size  = size
     @queue = Queue.new
   end
 
+  # Put jobs into the queue. Use
+  #   strings for system commands
+  #   proc,args for single methods
+  #   [object,[:methods,args]] for sende messages to objects
+  #
   def push(*items)
     items.each {|it| @queue << it}
   end
 
+  # Start workers to run through the queue
   def run
     @threads = (1..@size).map {|i|
       Thread.new(@queue) {|q|
@@ -49,6 +56,7 @@ class JobQueue
     @threads.each {|t| t.join}
   end
 
+  # Get the maximum number of parallel runs
   def number_of_processors
     if RUBY_PLATFORM =~ /linux/
       return `cat /proc/cpuinfo | grep processor | wc -l`.to_i

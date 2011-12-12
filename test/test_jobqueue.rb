@@ -114,12 +114,24 @@ class TestJobQueue < Test::Unit::TestCase
     a = A.new
     a.seth(1)
     assert_equal(2,a.h[1])
-    (0..77).each {|i|
-      @jq.push([a,[:seth,i]])
-    }
+    (0..77).each {|i| @jq.push([a,[:seth,i]]) }
     @jq.run
-    (0..77).each {|i|
-      assert_equal(2*i,a.h[i])
-    }
+    (0..77).each {|i| assert_equal(2*i,a.h[i]) }
+    a.h.clear
+    assert_equal({},a.h)
+    (0..1000000).each {|i| @jq.push([fill,a.h,i]) }
+    @jq.run
+    assert_not_equal(a.h.keys, a.h.keys.sort)
+
+    (0..20).each {|i| assert_equal(i,a.h[i])}
+    a.h.clear
+    assert_equal({},a.h)
+    lock = Mutex.new
+    (0..20).each {|i| @jq.push([lockfill,a.h,i,lock]) }
+    @jq.run
+  end
+
+  def test_max
+    assert_equal(8,@jq.number_of_processors) if `hostname`.chomp == 'thingol'
   end
 end
