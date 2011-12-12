@@ -1,0 +1,85 @@
+= JobQueue - Let run your jobs in parallel
+
+This package contains jobQueue: 
+  * A simple class to parallalize your work on a user definend number of threads
+  * A ruby script, which uses the above class to run each line of a shell script
+
+jobQueue can do the following things:
+
+* Run shell commands
+* Run instance and class methods
+* Run Procs and Lambdas
+* Respect user definded locks
+
+== Installation
+
+=== Gem Installation
+
+Download and install jobQueue with the following.
+
+   gem install jobQueue
+
+=== Requirements
+
+JobQueue requires Ruby only, but versions 1.9.x are needed to make use of system threads.
+
+== Usage
+
+=== Parallelize Ruby's procs, lambdas and things
+
+Create a JobQueue with nThreads worker with:
+
+  jq = JobQueue.new(nThreads)
+
+Use its push method to put in something to do
+
+* For procs and lambdas: 
+    
+    jp.push(myProc,arg0,arg1,...)
+
+* For object methods:
+
+    jq.push([myObject,[:method,arg0,arg1,...])
+
+* Same code can be used for class methods:
+
+    jq.push(myClass,[:myClassMethod,arg0,arg1,...])
+
+To start the workers, call 
+
+  jq.run
+
+That's it. You might have look at tests, that come with the jobQueue gem.
+
+=== Parallelize system commands
+
+Any string is expected to be a valid system command and executed via Ruby's system call, e.g.
+
+  jq.push('find ./src -name "*.rb"','find ./downloads -name "*.rb"')
+
+will start 2 parallel searches for ruby files.
+
+== Support, Issues, Bugs, ...
+
+As long there is no dedicataed project page, please use direct mail or the ruby-lang mailing list.
+
+== Credits
+
+[<b>Robert Klemme</b>] For the first hints: https://www.ruby-forum.com/topic/68001#86298
+
+== License
+
+jobQueue makes use of the BSD License
+
+:include: LICENSE
+
+
+---
+
+= Other stuff
+
+Author::   Ralf Mueller <stark.dreamdetective@gmail.com>
+Requires:: Ruby 1.9 or later
+License::  Copyright 2011 by Ralf Mueller
+           Released under BSD-style license.  See the LICENSE
+           file included in the distribution.
