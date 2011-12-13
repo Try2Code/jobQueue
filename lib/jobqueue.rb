@@ -72,6 +72,8 @@ class JobQueue
     raise "can't determine 'number_of_processors' for '#{RUBY_PLATFORM}'"
   end
 end
+
+# Special class for runing operating system commands with Ruby's system call
 class SystemJobs < JobQueue
   def run
     @threads = (1..@size).map {|i|
