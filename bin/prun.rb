@@ -14,6 +14,6 @@ end
 noTh = ARGV[0].to_i
 # read file line per line
 lines = File.open(ARGV[1]).readlines.map(&:chomp)
-q = JobQueue.new(noTh)
+q = SystemJobs.new(noTh)
 q.push(*lines)
 q.run
