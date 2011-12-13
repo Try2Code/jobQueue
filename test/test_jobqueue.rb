@@ -42,21 +42,22 @@ class TestJobQueue < Test::Unit::TestCase
     @jqSer = JobQueue.new(1)
   end
 
-  def test_string
-    @jq.push(*%w[ls]*7)
+  def _test_system_cmds
+    cmds = %w[date ls echo true]
+    7.times { @jq.push(cmds[(4*rand).floor])}
     @jq.run
   end
 
   def test_proc_simple
     halo = lambda { puts "halo"}
-    @jq.push(*([halo]*11))
+    11.times { @jq.push(halo) }
     @jq.run
   end
   def test_proc
     sqrt = lambda {|v| puts Math.sqrt(v)}
     norm = lambda {|x,y| puts Math.sqrt(x*x + y*y)}
-    10.times { @jq.push([sqrt,rand])}
-    10.times { @jq.push([norm,rand,rand])}
+    10.times { @jq.push(sqrt,rand)}
+    10.times { @jq.push(norm,rand,rand)}
     @jq.run
   end
   def test_method
@@ -65,13 +66,17 @@ class TestJobQueue < Test::Unit::TestCase
     assert_equal(nil,a.j)
     assert_equal(nil,a.k)
     i = 10
-    @jq.push([a,[:seti,i]])
+    @jq.push(a,:seti,i)
     @jq.run
     assert_equal(i,a.i)
     i = 11
-    @jq.push([a,[:seti,i]])
+    @jq.push(a,:seti,i)
     @jq.run
     assert_equal(i,a.i)
+    (0..77).each {|i| @jq.push(a,:seth,i) }
+    @jq.run
+    (0..77).each {|i| assert_equal(2*i,a.h[i]) }
+    a.h.clear;assert_equal({},a.h)
   end
   def test_accessor
     a = A.new
@@ -79,16 +84,16 @@ class TestJobQueue < Test::Unit::TestCase
     assert_equal(nil,a.j)
     assert_equal(nil,a.k)
     # try ruby style accessors
-    @jqSer.push([a,[:i=,1]])
-    @jqSer.push([a,[:j=,2]])
-    @jqSer.push([a,[:k=,3]])
+    @jqSer.push(a,:i=,1)
+    @jqSer.push(a,:j=,2)
+    @jqSer.push(a,:k=,3)
     @jqSer.run
     assert_equal(1,a.i)
     assert_equal(2,a.j)
     assert_equal(3,a.k)
-    @jq.push([a,[:i=,10]])
-    @jq.push([a,[:j=,20]])
-    @jq.push([a,[:k=,30]])
+    @jq.push(a,:i=,10)
+    @jq.push(a,:j=,20)
+    @jq.push(a,:k=,30)
     @jq.run
     assert_equal(10,a.i)
     assert_equal(20,a.j)
@@ -96,14 +101,14 @@ class TestJobQueue < Test::Unit::TestCase
   end
 
   def test_class_methods
-    @jq.push([B,[:set,1]])
+    @jq.push(B,:set,1)
     @jq.run
     assert_equal(1,B.get)
   end
   def test_module
-    @jq.push([C,[:sqrt,10]])
-    @jq.push([C,[:sqrt,100]])
-    @jq.push([C,[:sqrt,1000]])
+    @jq.push(C,:sqrt,10)
+    @jq.push(C,:sqrt,100)
+    @jq.push(C,:sqrt,1000)
     @jq.run
   end
   def test_lock
@@ -114,24 +119,31 @@ class TestJobQueue < Test::Unit::TestCase
     a = A.new
     a.seth(1)
     assert_equal(2,a.h[1])
-    (0..77).each {|i| @jq.push([a,[:seth,i]]) }
-    @jq.run
-    (0..77).each {|i| assert_equal(2*i,a.h[i]) }
-    a.h.clear
-    assert_equal({},a.h)
-    (0..1000000).each {|i| @jq.push([fill,a.h,i]) }
+
+    (0..1000000).each {|i| @jq.push(fill,a.h,i) }
     @jq.run
     assert_not_equal(a.h.keys, a.h.keys.sort)
-
     (0..20).each {|i| assert_equal(i,a.h[i])}
-    a.h.clear
-    assert_equal({},a.h)
+    a.h.clear;assert_equal({},a.h)
+ 
     lock = Mutex.new
-    (0..20).each {|i| @jq.push([lockfill,a.h,i,lock]) }
+    (0..20).each {|i| @jq.push(lockfill,a.h,i,lock) }
     @jq.run
   end
 
   def test_max
     assert_equal(8,@jq.number_of_processors) if `hostname`.chomp == 'thingol'
+  end
+
+  def test_push
+    a = A.new
+    @jq.push(a,:seth,1)
+    @jq.push(a,:i=,77)
+    @jq.push($stdout,:puts,"halo")
+    @jq.push(Math,:sqrt,22)
+    @jq.push(lambda { puts "halo"})
+    @jq.run
+    assert_equal(2,a.h[1])
+    assert_equal(77,a.i)
   end
 end

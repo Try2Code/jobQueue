@@ -18,12 +18,10 @@ class JobQueue
   end
 
   # Put jobs into the queue. Use
-  #   strings for system commands
   #   proc,args for single methods
-  #   [object,[:methods,args]] for sende messages to objects
-  #
-  def push(*items)
-    items.each {|it| @queue << it}
+  #   object,:method,args for sende messages to objects
+  def push(*item)
+    @queue << item
   end
 
   # Start workers to run through the queue
@@ -31,23 +29,18 @@ class JobQueue
     @threads = (1..@size).map {|i|
       Thread.new(@queue) {|q|
         until ( q == ( task = q.deq ) )
-          if task.kind_of? String
-            system(task)
-          elsif task.kind_of? Proc
-            task.call
-          elsif task.kind_of? Array
-            if task.size > 1
-              if not task[1].kind_of? Array 
-                # Expects proc/lambda with arguments, e.g. [mysqrt,2.789]
-                task[0].call(*task[1..-1])
-              else
-                # expect an object in task[0] and one of its methods with arguments in task[1] as a symbol
-                # e.g. [a,[:attribute=,1]
-                task[0].send(task[1][0],*task[1][1..-1])
-              end
+          pp task if false
+          if task.size > 1
+            if task[0].kind_of? Proc
+              # Expects proc/lambda with arguments, e.g. [mysqrt,2.789]
+              task[0].call(*task[1..-1])
             else
-              warn 'provide 2d arrays'
+              # expect an object in task[0] and one of its methods with arguments in task[1] as a symbol
+              # e.g. [a,[:attribute=,1]
+              task[0].send(task[1],*task[2..-1])
             end
+          else
+            task[0].call
           end
         end
       }
@@ -80,4 +73,3 @@ class JobQueue
     raise "can't determine 'number_of_processors' for '#{RUBY_PLATFORM}'"
   end
 end
-
