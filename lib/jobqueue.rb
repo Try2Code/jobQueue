@@ -29,7 +29,6 @@ class JobQueue
     @threads = (1..@size).map {|i|
       Thread.new(@queue) {|q|
         until ( q == ( task = q.deq ) )
-          pp task if false
           if task.size > 1
             if task[0].kind_of? Proc
               # Expects proc/lambda with arguments, e.g. [mysqrt,2.789]
@@ -71,5 +70,18 @@ class JobQueue
         return Runtime.getRuntime().availableProcessors().to_i
     end
     raise "can't determine 'number_of_processors' for '#{RUBY_PLATFORM}'"
+  end
+end
+class SystemJobs < JobQueue
+  def run
+    @threads = (1..@size).map {|i|
+      Thread.new(@queue) {|q|
+        until ( q == ( task = q.deq ) )
+          IO.popen(task).read
+        end
+      }
+    }
+    @threads.size.times { @queue.enq @queue}
+    @threads.each {|t| t.join}
   end
 end

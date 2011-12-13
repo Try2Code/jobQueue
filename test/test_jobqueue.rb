@@ -40,12 +40,14 @@ class TestJobQueue < Test::Unit::TestCase
   def setup
     @jq    = JobQueue.new(NTHREDs)
     @jqSer = JobQueue.new(1)
+    @sysjq = SystemJobs.new(NTHREDs)
   end
 
-  def _test_system_cmds
+  def test_system_cmds
     cmds = %w[date ls echo true]
-    7.times { @jq.push(cmds[(4*rand).floor])}
-    @jq.run
+    7.times { @sysjq.push(cmds[(4*rand).floor])}
+    20.times { @sysjq.push('ls')}
+    @sysjq.run
   end
 
   def test_proc_simple
