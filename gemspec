@@ -13,6 +13,8 @@ spec = Gem::Specification.new do |s|
   s.email             = "stark.dreamdetective@gmail.com"
   s.homepage          = "https://github.com/Try2Code/jobQueue"
   s.extra_rdoc_files          = ["README.rdoc","LICENSE"]
+  s.license           = "BSD"
+  s.test_files        = "test/test_jobqueue.rb"
   s.required_ruby_version = ">= 1.9"
 end
 

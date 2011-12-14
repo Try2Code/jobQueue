@@ -122,7 +122,7 @@ class TestJobQueue < Test::Unit::TestCase
     a.seth(1)
     assert_equal(2,a.h[1])
 
-    (0..1000000).each {|i| @jq.push(fill,a.h,i) }
+    (0..1000).each {|i| @jq.push(fill,a.h,i) }
     @jq.run
     assert_not_equal(a.h.keys, a.h.keys.sort)
     (0..20).each {|i| assert_equal(i,a.h[i])}
