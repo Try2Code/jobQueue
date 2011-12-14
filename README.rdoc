@@ -72,9 +72,9 @@ As long there is no dedicataed project page, please use direct mail or the ruby-
 
 == License
 
-jobQueue makes use of the BSD License
+jobQueue use the BSD License
 
-:include: LICENSE
+:include LICENSE
 
 
 ---
