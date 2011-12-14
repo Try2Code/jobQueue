@@ -59,7 +59,7 @@ Use a separate class for this and push string to it:
   jq.push('find ./src -name "*.rb"','find ./downloads -name "*.rb"')
 
 will start 2 parallel searches for ruby files. This is implemented in the
-prun.rb script, which comes with the jobQueue ge script, which comes with the
+prun.rb script, which comes with the jobQueue gem.
 jobQueue gem.
 
 == Support, Issues, Bugs, ...
