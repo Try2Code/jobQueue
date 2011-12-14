@@ -53,8 +53,9 @@ That's it. You might have look at tests, that come with the jobQueue gem.
 
 === Parallelize system commands
 
-Any string is expected to be a valid system command and executed via Ruby's system call, e.g.
+Use a separate class for this and push string to it:
 
+  jq = SystemJobs.new(nThreads)
   jq.push('find ./src -name "*.rb"','find ./downloads -name "*.rb"')
 
 will start 2 parallel searches for ruby files.
