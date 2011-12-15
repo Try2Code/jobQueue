@@ -148,6 +148,8 @@ class TestJobQueue < Test::Unit::TestCase
 
   def test_max
     assert_equal(8,JobQueue.maxnumber_of_processors) if `hostname`.chomp == 'thingol'
+    assert_equal(JobQueue.maxnumber_of_processors,SystemJobs.maxnumber_of_processors)
+    pp SystemJobs.maxnumber_of_processors
   end
 
   def test_push
