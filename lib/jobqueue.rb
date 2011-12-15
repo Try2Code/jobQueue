@@ -56,26 +56,33 @@ class JobQueue
 
   # Get the maximum number of parallel runs
   def JobQueue.maxnumber_of_processors
-    if RUBY_PLATFORM =~ /linux/
-      return `cat /proc/cpuinfo | grep processor | wc -l`.to_i
-    elsif RUBY_PLATFORM =~ /darwin/
-      return `sysctl -n hw.logicalcpu`.to_i
-    elsif RUBY_PLATFORM =~ /(win32|mingw|cygwin)/
-      # this works for windows 2000 or greater
-      require 'win32ole'
-      wmi = WIN32OLE.connect("winmgmts://")
-      wmi.ExecQuery("select * from Win32_ComputerSystem").each do |system|
-        begin
-          processors = system.NumberOfLogicalProcessors
-        rescue
-          processors = 0
+    case RUBY_ENGINE
+    when 'jruby'
+      return Runtime.getRuntime().availableProcessors().to_i
+      #  processors = java.lang.Runtime.getRuntime.availableProcessors
+    when 'ironruby'
+      return System::Environment.ProcessorCount
+    when 'ruby'
+      case  RUBY_PLATFORM
+      when /linux/
+        return `cat /proc/cpuinfo | grep processor | wc -l`.to_i
+      when /darwin/
+        return `sysctl -n hw.logicalcpu`.to_i
+      when /(win32|mingw|cygwin)/
+        # this works for windows 2000 or greater
+        require 'win32ole'
+        wmi = WIN32OLE.connect("winmgmts://")
+        wmi.ExecQuery("select * from Win32_ComputerSystem").each do |system|
+          begin
+            processors = system.NumberOfLogicalProcessors
+          rescue
+            processors = 0
+          end
+          return [system.NumberOfProcessors, processors].max
         end
-        return [system.NumberOfProcessors, processors].max
       end
-      elseif RUBY_PLATFORM =~ /java/
-        return Runtime.getRuntime().availableProcessors().to_i
     end
-    raise "can't determine 'number_of_processors' for '#{RUBY_PLATFORM}'"
+    raise "Cannot determine the number of available Processors for RUBY_PLATFORM:'#{RUBY_PLATFORM}' and RUBY_ENGINE:#{RUBY_ENGINE}"
   end
 end
 
