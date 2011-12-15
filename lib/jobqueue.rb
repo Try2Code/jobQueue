@@ -9,13 +9,18 @@ require 'pp'
 # Sized Queue for limiting the number of parallel jobs
 # ==============================================================================
 class JobQueue
-  attr_reader :size, :queue, :threads
+  attr_reader :workers, :threads
 
   # Create a new queue qith a given number of worker threads
-  def initialize(size)
-    @size  = size
-    @queue = Queue.new
+  def initialize(nWorkers)
+    @workers = nWorkers
+    @queue   = Queue.new
   end
+
+  # borrow some useful methods from Queue class
+  [:size,:length,:clear,:empty?].each {|method|
+    define_method(method) { @queue.send(method) }
+  }
 
   # Put jobs into the queue. Use
   #   proc,args for single methods
@@ -27,7 +32,7 @@ class JobQueue
 
   # Start workers to run through the queue
   def run
-    @threads = (1..@size).map {|i|
+    @threads = (1..@workers).map {|i|
       Thread.new(@queue) {|q|
         until ( q == ( task = q.deq ) )
           if task.size > 1
@@ -50,7 +55,7 @@ class JobQueue
   end
 
   # Get the maximum number of parallel runs
-  def number_of_processors
+  def JobQueue.maxnumber_of_processors
     if RUBY_PLATFORM =~ /linux/
       return `cat /proc/cpuinfo | grep processor | wc -l`.to_i
     elsif RUBY_PLATFORM =~ /darwin/
@@ -77,7 +82,7 @@ end
 # Special class for runing operating system commands with Ruby's system call
 class SystemJobs < JobQueue
   def run
-    @threads = (1..@size).map {|i|
+    @threads = (1..@workers).map {|i|
       Thread.new(@queue) {|q|
         until ( q == ( task = q.deq ) )
           IO.popen(task).read

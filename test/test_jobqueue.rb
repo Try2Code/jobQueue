@@ -43,6 +43,19 @@ class TestJobQueue < Test::Unit::TestCase
     @sysjq = SystemJobs.new(NTHREDs)
   end
 
+  def test_queue_methods
+    assert_equal(NTHREDs,@jq.workers)
+    assert_equal(0,@jq.size)
+    assert_equal(0,@jq.length)
+    assert(@jq.empty?,"jobQueue is not empty")
+    4.times { @jq.push(Math,:sqrt,rand) }
+    assert_equal(4,@jq.size)
+    @jq.clear
+    assert(@jq.empty?,"jobQueue is not empty")
+    4.times { @jq.push(Math,:sqrt,rand) }
+    @jq.run
+    assert(@jq.empty?,"jobQueue is not empty")
+  end
   def test_system_cmds
     cmds = %w[date ls echo true]
     7.times { @sysjq.push(cmds[(4*rand).floor])}
@@ -134,7 +147,7 @@ class TestJobQueue < Test::Unit::TestCase
   end
 
   def test_max
-    assert_equal(8,@jq.number_of_processors) if `hostname`.chomp == 'thingol'
+    assert_equal(8,JobQueue.maxnumber_of_processors) if `hostname`.chomp == 'thingol'
   end
 
   def test_push
