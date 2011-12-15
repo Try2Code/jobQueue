@@ -148,4 +148,39 @@ class TestJobQueue < Test::Unit::TestCase
     assert_equal(2,a.h[1])
     assert_equal(77,a.i)
   end
+
+  def test_block
+    a = A.new
+    @jq.push { a.i = 111 }
+    @jq.run
+    assert_equal(111,a.i)
+
+    size = 100
+    (0..size).each {|i|
+      @jq.push do
+        a.h[i] = i*i
+      end
+    }
+    @jq.run
+    (0..size).each {|i| assert_equal(i*i,a.h[i]) }
+  end
+
+  def test_block_vs_method
+    a = A.new
+    size = 100
+    # use blocks
+    (0..size).each {|i|
+      @jq.push do
+        a.h[i] = i*i
+      end
+    }
+    @jq.run
+    (0..size).each {|i| assert_equal(i*i,a.h[i]) }
+    a.h.clear
+
+    # use method
+    (0..size).each {|i| @jq.push(a,:seth,i) }
+    @jq.run
+    (0..size).each {|i| assert_equal(2*i,a.h[i]) }
+  end
 end

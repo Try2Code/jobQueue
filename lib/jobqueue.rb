@@ -20,8 +20,9 @@ class JobQueue
   # Put jobs into the queue. Use
   #   proc,args for single methods
   #   object,:method,args for sende messages to objects
-  def push(*item)
-    @queue << item
+  def push(*item,&block)
+    @queue << item    unless item.empty?
+    @queue << [block] unless block.nil?
   end
 
   # Start workers to run through the queue
