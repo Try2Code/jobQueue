@@ -1,6 +1,7 @@
 $:.unshift File.join(File.dirname(__FILE__),"..","lib")
 require 'test/unit'
 require 'jobqueue'
+require 'tempfile'
 
 
 NTHREDs = ENV['NTHREDs'].nil? ? 4 : ENV['NTHREDs']

@@ -12,9 +12,10 @@ class JobQueue
   attr_reader :workers, :threads
 
   # Create a new queue qith a given number of worker threads
-  def initialize(nWorkers)
+  def initialize(nWorkers,debug=false)
     @workers = nWorkers
     @queue   = Queue.new
+    @debug   = debug
   end
 
   # borrow some useful methods from Queue class
@@ -90,9 +91,13 @@ end
 class SystemJobs < JobQueue
   def run
     @threads = (1..@workers).map {|i|
-      Thread.new(@queue) {|q|
+      Thread.new(@queue,@debug) {|q,dbg|
         until ( q == ( task = q.deq ) )
-          IO.popen(task).read
+          if dbg
+            puts IO.popen(task.first).read
+          else
+            IO.popen(task.first)
+          end
         end
       }
     }
