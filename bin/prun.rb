@@ -39,7 +39,7 @@ ARGV.each do|f|
   # read file line per line
   lines = File.open(f).readlines.map(&:chomp)
   q     = SystemJobs.new(options[:workers],options[:debug])
-  puts q.workers if options[:debug]
+  puts "Run with #{q.workers} threads"
   lines.each {|line| q.push(line) }
   q.run
 end

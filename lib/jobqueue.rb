@@ -93,11 +93,8 @@ class SystemJobs < JobQueue
     @threads = (1..@workers).map {|i|
       Thread.new(@queue,@debug) {|q,dbg|
         until ( q == ( task = q.deq ) )
-          if dbg
-            puts IO.popen(task.first).read
-          else
-            IO.popen(task.first)
-          end
+          ret = IO.popen(task.first).read
+          #puts ret if dbg
         end
       }
     }

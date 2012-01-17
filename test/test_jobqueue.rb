@@ -199,4 +199,27 @@ class TestJobQueue < Test::Unit::TestCase
     @jq.run
     (0..size).each {|i| assert_equal(2*i,a.h[i]) }
   end
+
+  def test_Shell
+    script = Tempfile.open("jobQueue")
+    (1..8).each {|i| script << "date;echo #{i}; sleep 1\n" }
+    script.close
+    #puts script.path
+    #puts IO.popen("cat "+script.path).read
+
+    # test in debug mode
+    tstart = Time.new
+    puts IO.popen("bin/prun.rb -d -j 4 #{script.path}").read
+    tend = Time.new
+    trun = tend - tstart
+    assert(2.0 < trun,"Test (debug mode) runs to fast: #{trun}, upper limit 2")
+    assert(trun < 3  ,"Test (debug mode) runs to slow: #{trun}, lower limit 3")
+    # test in normal mode
+    tstart = Time.new
+    puts IO.popen("bin/prun.rb -j 4 #{script.path}").read
+    tend = Time.new
+    trun = tend - tstart
+    assert(2.0 < trun,"Test (normal mode) runs to fast: #{trun}, upper limit 2")
+    assert(trun < 3  ,"Test (normal mode) runs to slow: #{trun}, lower limit 3")
+  end
 end
