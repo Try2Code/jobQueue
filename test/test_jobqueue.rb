@@ -201,6 +201,7 @@ class TestJobQueue < Test::Unit::TestCase
   end
 
   def test_Shell
+    #return true if @jq
     script = Tempfile.open("jobQueue")
     (1..8).each {|i| script << "date;echo #{i}; sleep 1\n" }
     script.close
@@ -212,14 +213,28 @@ class TestJobQueue < Test::Unit::TestCase
     puts IO.popen("bin/prun.rb -d -j 4 #{script.path}").read
     tend = Time.new
     trun = tend - tstart
-    assert(2.0 < trun,"Test (debug mode) runs to fast: #{trun}, upper limit 2")
-    assert(trun < 3  ,"Test (debug mode) runs to slow: #{trun}, lower limit 3")
+    assert(2.0 < trun,"Test (debug mode) runs to fast: #{trun}, lower limit 2")
+    assert(trun < 3  ,"Test (debug mode) runs to slow: #{trun}, upper limit 3")
     # test in normal mode
     tstart = Time.new
     puts IO.popen("bin/prun.rb -j 4 #{script.path}").read
     tend = Time.new
     trun = tend - tstart
-    assert(2.0 < trun,"Test (normal mode) runs to fast: #{trun}, upper limit 2")
-    assert(trun < 3  ,"Test (normal mode) runs to slow: #{trun}, lower limit 3")
+    assert(2.0 < trun,"Test (normal mode) runs to fast: #{trun}, lower limit 2")
+    assert(trun < 3  ,"Test (normal mode) runs to slow: #{trun}, upper limit 3")
+    # with 8 threads
+    tstart = Time.new
+    puts IO.popen("bin/prun.rb -d -j 8 #{script.path}").read
+    tend = Time.new
+    trun = tend - tstart
+    assert(1.0 < trun,"Test (debug mode) runs to fast: #{trun}, lower limit 1")
+    assert(trun < 2.0,"Test (debug mode) runs to slow: #{trun}, lower limit 2")
+    # test in normal mode
+    tstart = Time.new
+    puts IO.popen("bin/prun.rb -j 8 #{script.path}").read
+    tend = Time.new
+    trun = tend - tstart
+    assert(1.0 < trun,"Test (debug mode) runs to fast: #{trun}, lower limit 1")
+    assert(trun < 2.0,"Test (debug mode) runs to slow: #{trun}, lower limit 2")
   end
 end
