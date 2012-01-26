@@ -12,7 +12,7 @@ class JobQueue
   attr_reader :workers, :threads
 
   # Create a new queue qith a given number of worker threads
-  def initialize(nWorkers,debug=false)
+  def initialize(nWorkers=JobQueue.maxnumber_of_processors,debug=false)
     @workers = nWorkers
     @queue   = Queue.new
     @debug   = debug

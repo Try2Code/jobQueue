@@ -237,4 +237,11 @@ class TestJobQueue < Test::Unit::TestCase
     assert(1.0 < trun,"Test (debug mode) runs to fast: #{trun}, lower limit 1")
     assert(trun < 2.0,"Test (debug mode) runs to slow: #{trun}, lower limit 2")
   end
+
+  if 'thingol' == `hostname`.chomp
+    def test_init_without_args
+      jq = JobQueue.new
+      assert_equal(8,jq.workers)
+    end
+  end
 end
