@@ -242,6 +242,8 @@ class TestJobQueue < Test::Unit::TestCase
     def test_init_without_args
       jq = JobQueue.new
       assert_equal(8,jq.workers)
+      jq = JobQueue.new(1)
+      assert_equal(1,jq.workers)
     end
   end
 end
