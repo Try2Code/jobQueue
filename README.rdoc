@@ -72,7 +72,7 @@ script on 10 threads, use:
   prun.rb -j 10 jobs.sh
 
 The '-j' switch is optional. Default is the maximum number of cores. The script
-accepts multiple files and processes one after another. Try '-h' dor documentation.
+accepts multiple files and processes one after another. Try '-h' for documentation.
 
 == Support, Issues, Bugs, ...
 
@@ -95,6 +95,6 @@ jobQueue use the BSD License
 
 Author::   Ralf Mueller <stark.dreamdetective@gmail.com>
 Requires:: Ruby 1.9 or later
-License::  Copyright 2011 by Ralf Mueller
+License::  Copyright 2011-2012 by Ralf Mueller
            Released under BSD-style license.  See the LICENSE
            file included in the distribution.
