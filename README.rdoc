@@ -6,9 +6,9 @@ This package contains jobQueue:
 
 jobQueue can do the following things:
 
-* Run shell commands
+* Run blocks, Procs and Lambdas
 * Run instance and class methods
-* Run Procs and Lambdas
+* Run shell commands
 * Respect user definded locks
 
 == Installation
