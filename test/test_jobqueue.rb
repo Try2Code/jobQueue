@@ -245,5 +245,46 @@ class TestJobQueue < Test::Unit::TestCase
       jq = JobQueue.new(1)
       assert_equal(1,jq.workers)
     end
+    def test_bench_shortQueue
+      runTimes = 10**7
+
+      times = {}
+      [1,2,3,4,6,8].each {|nworker|
+        puts nworker
+        jq = JobQueue.new(nworker)
+        nworker.times {|i|
+          jq.push {
+            runTimes.times { rand() }
+          }
+        }
+        print "start ..."
+        start = Time.new
+        jq.run
+        times[nworker] = Time.new - start
+        puts
+      }
+      pp times
+    end
+    def test_bench_longQueue
+      runTimes = 10**5
+
+      times = {}
+      [1,2,4,8].each {|nworker|
+        puts nworker
+        jq = JobQueue.new(nworker)
+        nworker.times {|i|
+          runTimes.times {
+            #jq.push(Kernel,:rand)
+            jq.push {
+              rand()
+            }
+          }
+          start = Time.new
+          jq.run
+          times[nworker] = Time.new - start
+        }
+      }
+      pp times
+    end
   end
 end
