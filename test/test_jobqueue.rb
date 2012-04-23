@@ -246,15 +246,20 @@ class TestJobQueue < Test::Unit::TestCase
       assert_equal(1,jq.workers)
     end
     def test_bench_shortQueue
-      runTimes = 10**7
+      # rand()
+      runTimes = 5*10**6
+      # date
+      runTimes = 10**2
 
       times = {}
-      [1,2,3,4,6,8].each {|nworker|
+      #[1,2,3,4,6,8].each {|nworker|
+      [1,2,4].each {|nworker|
         puts nworker
         jq = JobQueue.new(nworker)
         nworker.times {|i|
           jq.push {
-            runTimes.times { rand() }
+            runTimes.times { system("date >/dev/null") }
+            #runTimes.times { rand() }
           }
         }
         print "start ..."
