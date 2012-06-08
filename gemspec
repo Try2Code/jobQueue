@@ -2,7 +2,7 @@ require 'rubygems'
 
 spec = Gem::Specification.new do |s|
   s.name              = "jobQueue"
-  s.version           = '1.0.6'
+  s.version           = '1.0.7rc1'
   s.platform          = Gem::Platform::RUBY
   s.bindir            = 'bin'
   s.files             = ["lib/jobqueue.rb","bin/prun.rb"] + ["gemspec","LICENSE","README.rdoc"]
@@ -15,7 +15,7 @@ spec = Gem::Specification.new do |s|
   s.extra_rdoc_files          = ["README.rdoc","LICENSE"]
   s.license           = "BSD"
   s.test_file         = "test/test_jobqueue.rb"
-  s.required_ruby_version = ">= 1.9"
+  s.required_ruby_version = ">= 1.8"
 end
 
 # vim:ft=ruby
