@@ -59,11 +59,11 @@ class JobQueue
   def JobQueue.maxnumber_of_processors
     case RUBY_ENGINE
     when 'jruby'
-      return Runtime.getRuntime().availableProcessors().to_i
-      #  processors = java.lang.Runtime.getRuntime.availableProcessors
+      require 'java'
+      return java.lang.Runtime.getRuntime.availableProcessors
     when 'ironruby'
       return System::Environment.ProcessorCount
-    when 'ruby'
+    when 'ruby','rbx'
       case  RUBY_PLATFORM
       when /linux/
         return `cat /proc/cpuinfo | grep processor | wc -l`.to_i
