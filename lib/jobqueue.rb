@@ -81,6 +81,9 @@ class JobQueue
           end
           return [system.NumberOfProcessors, processors].max
         end
+      when /powerpc-aix/
+        processors = IO.open("lsdev -Cc processor").readlines.size
+        # alternative, but slover: IO.popen("prtconf").readlines.grep(/Number of processors/i).first.split(" ").last.to_i
       end
     end
     raise "Cannot determine the number of available Processors for RUBY_PLATFORM:'#{RUBY_PLATFORM}' and RUBY_ENGINE:#{RUBY_ENGINE}"
@@ -94,7 +97,6 @@ class SystemJobs < JobQueue
       Thread.new(@queue,@debug) {|q,dbg|
         until ( q == ( task = q.deq ) )
           ret = IO.popen(task.first).read
-          #puts ret if dbg
         end
       }
     }
