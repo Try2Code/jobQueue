@@ -76,7 +76,14 @@ accepts multiple files and processes one after another. Try '-h' for documentati
 
 == Support, Issues, Bugs, ...
 
-As long there is no dedicataed project page, please use direct mail or the ruby-lang mailing list.
+please use personal mail, ruby-lang mailing list or github
+
+== Changelog
+
+=== 1.0.7
+
+support AIX for getting the maximum number of processors
+improve processor count for jruby and rbx
 
 == Credits
 
