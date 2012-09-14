@@ -82,7 +82,7 @@ class JobQueue
           return [system.NumberOfProcessors, processors].max
         end
       when /powerpc-aix/
-        processors = IO.open("lsdev -Cc processor").readlines.size
+        return IO.popen("lsdev -Cc processor").readlines.size
         # alternative, but slover: IO.popen("prtconf").readlines.grep(/Number of processors/i).first.split(" ").last.to_i
       end
     end
