@@ -212,7 +212,7 @@ class TestJobQueue < Test::Unit::TestCase
     script.close
     filename = script.path
     puts IO.popen("cat "+script.path).read
-    cmd = lambda {|np,script| "ruby -rubygems ./bin/prun.rb -d -j #{np} #{script}"}
+    cmd = lambda {|np,script| "ruby -rubygems ./bin/prun.rb -j #{np} #{script}"}
 
     # test in debug mode
     tstart = Time.new
