@@ -2,7 +2,7 @@ require 'rubygems'
 
 spec = Gem::Specification.new do |s|
   s.name              = "jobQueue"
-  s.version           = '1.0.8'
+  s.version           = '1.0.9'
   s.platform          = Gem::Platform::RUBY
   s.bindir            = 'bin'
   s.files             = ["lib/jobqueue.rb","bin/prun.rb"] + ["gemspec","LICENSE","README.rdoc"]
