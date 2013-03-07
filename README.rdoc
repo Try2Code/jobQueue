@@ -80,6 +80,7 @@ please use personal mail, ruby-lang mailing list or github
 
 == Changelog
 
+* 1.0.9: print out stdout and stderr from the jobs given to prun.rb, use '-D' to avoid printing
 * 1.0.8: support AIX for getting the maximum number of processors, improve processor count for jruby and rbx
 
 == Credits
