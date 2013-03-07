@@ -9,7 +9,7 @@ require 'jobqueue'
 # ==============================================================================
 
 nTh      = SystemJobs.maxnumber_of_processors
-options  = {:workers => nTh,:debug => false}
+options  = {:workers => nTh,:debug => true}
 optparse = OptionParser.new do|opts|
   opts.banner = "Usage: prun.rb [options] command-files"
 
@@ -17,8 +17,12 @@ optparse = OptionParser.new do|opts|
   opts.on('-j [NUM]',"Number of worker threads (default:#{nTh})") do |num|
     options[:workers] = num.to_i.abs
   end
-  opts.on('-d','--debug','Print output from workers on stdout') do
-    options[:debug] = true
+  opts.on('-D','--no-debug','subpress output from workers') do
+    options[:debug] = false
+  end
+  opts.on('-v','--version','Print version nummer') do
+    puts '1.0.9'
+    exit
   end
   # This displays the help screen, all programs are
   # assumed to have this option.
@@ -39,7 +43,7 @@ ARGV.each do|f|
   # read file line per line
   lines = File.open(f).readlines.map(&:chomp)
   q     = SystemJobs.new(options[:workers],options[:debug])
-  puts "Run with #{q.workers} threads"
+  puts "Run with #{q.workers} threads" if options[:debug]
   lines.each {|line| q.push(line) }
   q.run
 end
