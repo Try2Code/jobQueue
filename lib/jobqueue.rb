@@ -1,6 +1,5 @@
-#!/usr/bin/env ruby
 require 'thread'
-require 'pp'
+require 'open3'
 # ==============================================================================
 # Author: Ralf Mueller, ralf.mueller@zmaw.de
 #         suggestions from Robert Klemme (https://www.ruby-forum.com/topic/68001#86298)
@@ -96,7 +95,12 @@ class SystemJobs < JobQueue
     @threads = (1..@workers).map {|i|
       Thread.new(@queue,@debug) {|q,dbg|
         until ( q == ( task = q.deq ) )
-          ret = IO.popen(task.first).read
+          _, stdout, stderr, _ = Open3.popen3(task.first)
+
+          # Create a thread to read from each stream
+          [stdout,stderr].map {|stdio|
+            Thread.new { puts $_ until stdio.gets.nil? }
+          }.each {|t| t.join} if dbg
         end
       }
     }
