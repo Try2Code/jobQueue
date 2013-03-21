@@ -81,7 +81,7 @@ please use personal mail, ruby-lang mailing list or github
 == Changelog
 
 * 1.0.10: more flexible logging control (new switches '-l' and '-b'
-* 1.0.9: support back-channel for SystemJob class
+* 1.0.9: print out stdout and stderr from the jobs given to prun.rb, use '-D' to avoid printing
 * 1.0.8: support AIX for getting the maximum number of processors, improve processor count for jruby and rbx
 
 == Credits
@@ -101,6 +101,6 @@ jobQueue use the BSD License
 
 Author::   Ralf Mueller <stark.dreamdetective@gmail.com>
 Requires:: Ruby 1.9 or later
-License::  Copyright 2011-2012 by Ralf Mueller
+License::  Copyright 2011-2013 by Ralf Mueller
            Released under BSD-style license.  See the LICENSE
            file included in the distribution.
