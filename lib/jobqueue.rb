@@ -11,7 +11,7 @@ class JobQueue
   attr_reader :workers, :threads
 
   # Create a new queue qith a given number of worker threads
-  def initialize(nWorkers=JobQueue.maxnumber_of_processors,debug=false)
+  def initialize(nWorkers=JobQueue.maxnumber_of_processors,debug=:off)
     @workers = nWorkers
     @queue   = Queue.new
     @debug   = debug
@@ -92,19 +92,42 @@ end
 # Special class for runing operating system commands with Ruby's system call
 class SystemJobs < JobQueue
   def run
-    @threads = (1..@workers).map {|i|
-      Thread.new(@queue,@debug) {|q,dbg|
-        until ( q == ( task = q.deq ) )
-          _, stdout, stderr, _ = Open3.popen3(task.first)
+    if :off == @debug then
+      $stdout.reopen("/dev/null", "w")
+      $stderr.reopen("/dev/null", "w")
+    end
 
-          # Create a thread to read from each stream
-          [stdout,stderr].map {|stdio|
-            Thread.new { puts $_ until stdio.gets.nil? }
-          }.each {|t| t.join} if dbg
+    @threads = (1..@workers).map {|i|
+      Thread.new(@queue,@debug) {|queue,debug|
+        Thread.current.abort_on_exception = true
+        until ( queue == ( task = queue.deq ) )
+          case debug
+          when :buffered
+            # output is buffered until jobs are finished
+            stderr_and_stdout,waitThr = Open3.capture2e(task.first)
+            puts stderr_and_stdout
+
+          when :flushed
+            # stdout and stderr are read + printed in parallel
+            _, stderr, stdout, waitThr = Open3.popen3(task.first)
+            # Create a thread to read from each stream
+            [stdout,stderr].map {|stream|
+              Thread.new(stream,debug) {|_stream|
+                Thread.current.abort_on_exception = true
+                puts $_ until _stream.gets.nil?
+              }
+            }.map(&:join)
+
+          when :off
+            # no output at all (switched off globally at the beginning of this method)'
+            system(task.first)
+          else
+            raise ArgumentError,"Unknown debug mode '#{debug}'!"
+          end
         end
       }
     }
     @threads.size.times { @queue.enq @queue}
-    @threads.each {|t| t.join}
+    @threads.map(&:join)
   end
 end
