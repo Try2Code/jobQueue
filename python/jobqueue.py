@@ -14,7 +14,7 @@ class JobWorker(threading.Thread):
   def run(self):
     while True:
       item = self.queue.get()
-      print(item)
+      item()
       self.queue.task_done()
 
 class SystemWorker(JobWorker):
@@ -43,13 +43,14 @@ class SystemWorker(JobWorker):
 # Sized Queue for limiting the number of parallel jobs
 # ==============================================================================
 class JobQueue(object):
-  def __init__(self,nWorkers,typ="internal",debug=False):
+  def __init__(self,nWorkers,debug=False,mode="job"):
     self.workers = nWorkers
     self.queue   = Queue.Queue()
     self.debug   = debug
+    self.mode    = mode
 
     for i in range(self.workers):
-      if "internal" == typ:
+      if "job" == self.mode:
         t = JobWorker(self.queue,self.debug)
       else:
         t = SystemWorker(self.queue,self.debug)
@@ -65,5 +66,5 @@ class JobQueue(object):
 
 class SystemJobs(JobQueue):
   def __init__(self,nWorkers,debug=False):
-    super(SystemJobs,self).__init__(nWorkers,"system",debug)
+    super(SystemJobs,self).__init__(nWorkers,debug,"system")
 
