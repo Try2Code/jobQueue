@@ -17,8 +17,7 @@ class JobQueueTest(unittest.TestCase):
       return work
     q = JobQueue(4,True)
     for i in range(10):
-      f = makeFunc(i)
-      q.push(f)
+      q.push(makeFunc(i))
     q.run()
 
 if __name__ == '__main__':
