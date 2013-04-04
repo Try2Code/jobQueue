@@ -1,6 +1,7 @@
 import Queue
 import threading
 import os,subprocess
+import multiprocessing
 # ==============================================================================
 # Author: Ralf Mueller, ralf.mueller@zmaw.de
 # ==============================================================================
@@ -14,8 +15,6 @@ class JobWorker(threading.Thread):
   def run(self):
     while True:
       item = self.queue.get()
-      if self.debug:
-        print(type(item))
       item()
       self.queue.task_done()
 
@@ -50,7 +49,6 @@ class JobQueue(object):
     self.queue   = Queue.Queue()
     self.debug   = debug
     self.mode    = mode
-    self._thread = []
 
     for i in range(self.workers):
       if "job" == self.mode:
@@ -71,3 +69,19 @@ class SystemJobs(JobQueue):
   def __init__(self,nWorkers,debug=False):
     super(SystemJobs,self).__init__(nWorkers,debug,"system")
 
+class mpJobQueue(object):
+  def __init__(self,nWorkers,debug=False):
+    self.workers = nWorkers
+    self.queue   = []
+    self.debug   = debug
+    self.pool  = multiprocessing.Pool(processes=nWorkers)
+
+  def push(self,*item):
+    self.queue.append(item)
+
+  def run(self):
+    for func,args in self.queue:
+      self.pool.apply_async(func,[args])
+
+    self.pool.close()
+    self.pool.join()
