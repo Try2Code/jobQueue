@@ -1,8 +1,6 @@
-import unittest,os,tempfile
-from stat import *
+import unittest,os
 from jobqueue import *
 import pylab as pl
-from cdo import *
 import numpy as np
 
 class JobQueueTest(unittest.TestCase):
@@ -15,16 +13,14 @@ class JobQueueTest(unittest.TestCase):
   def test_push(self):
     def makeFunc(arg):
       def work():
+        print(arg,' started')
         n = arg*arg
         print 'n = ',n
         os.system("ls")
-        z=3000
-        cdo = Cdo()
-        info = cdo.infov(input='-topo',options='-f nc')[1]
-        print(info)
+        print arg,' finished'
 
       return work
-    q = JobQueue(2)
+    q = JobQueue(4)
     for i in range(10):
       q.push(makeFunc(i))
     q.run()
