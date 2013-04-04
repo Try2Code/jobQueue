@@ -11,6 +11,10 @@ jobQueue can do the following things:
 * Run shell commands
 * Respect user definded locks
 
+I started a python2 implementation of this, which can be installed via pip
+(https://pypi.python.org/pypi/jobqueue). When its maature enough, I will use
+the ruby version numbers for it.
+
 == Installation
 
 === Gem Installation
