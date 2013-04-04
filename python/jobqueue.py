@@ -5,6 +5,9 @@ import multiprocessing
 # ==============================================================================
 # Author: Ralf Mueller, ralf.mueller@zmaw.de
 # ==============================================================================
+def version(self):
+  '0.0.2'
+
 class JobWorker(threading.Thread):
   # Create a new queue qith a given number of worker threads
   def __init__(self,queue,debug=False):

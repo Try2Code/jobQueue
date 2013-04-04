@@ -2,7 +2,7 @@
 from setuptools import setup
 
 setup (name   = 'jobqueue',
-  version     = '0.0.1',
+  version     = '0.0.2',
   author      = "Ralf Mueller",
   author_email= "stark.dreamdetective@gmail.com",
   license     = "BSD",
