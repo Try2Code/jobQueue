@@ -14,6 +14,8 @@ class JobWorker(threading.Thread):
   def run(self):
     while True:
       item = self.queue.get()
+      if self.debug:
+        print(type(item))
       item()
       self.queue.task_done()
 
@@ -48,6 +50,7 @@ class JobQueue(object):
     self.queue   = Queue.Queue()
     self.debug   = debug
     self.mode    = mode
+    self._thread = []
 
     for i in range(self.workers):
       if "job" == self.mode:
