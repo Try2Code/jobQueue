@@ -28,7 +28,7 @@ class JobQueueTest(unittest.TestCase):
   def test_pylab(self):
     def makeWork(z):
       def work():
-        print('z=',z)
+        print('started for z=',z)
         topo = np.array([[1.,2.],[3.,4.]])
         pl.imshow(topo,interpolation="nearest")
         pl.savefig('testImage_%i'%(z))
