@@ -50,6 +50,6 @@ ARGV.each do|f|
   lines = File.open(f).readlines.map(&:chomp)
   q     = SystemJobs.new(options[:workers],options[:debug])
   puts "Run with #{q.workers} threads" unless :off == options[:debug]
-  lines.each {|line| q.push(line) }
+  lines.each {|line| q.push(line) unless line.strip.empty? }
   q.run
 end

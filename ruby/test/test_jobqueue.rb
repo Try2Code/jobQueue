@@ -5,6 +5,9 @@ require 'tempfile'
 
 
 NTHREDs = ENV['NTHREDs'].nil? ? 4 : ENV['NTHREDs']
+def prunCall(np,script)
+  "ruby -rubygems ./bin/prun.rb -j #{np} #{script}"
+end
 
 class A
   attr_accessor :i,:j,:k,:h
@@ -212,36 +215,47 @@ class TestJobQueue < Test::Unit::TestCase
     script.close
     filename = script.path
     puts IO.popen("cat "+script.path).read
-    cmd = lambda {|np,script| "ruby -rubygems ./bin/prun.rb -j #{np} #{script}"}
 
     # test in debug mode
     tstart = Time.new
-    puts IO.popen(cmd[4,filename]).read
+    puts IO.popen(prunCall(4,filename)).read
     tend = Time.new
     trun = tend - tstart
     assert(2.0 < trun,"Test (debug mode) runs to fast: #{trun}, lower limit 2")
     assert(trun < 3  ,"Test (debug mode) runs to slow: #{trun}, upper limit 3")
     # test in normal mode
     tstart = Time.new
-    puts IO.popen(cmd[4,filename]).read
+    puts IO.popen(prunCall(4,filename)).read
     tend = Time.new
     trun = tend - tstart
     assert(2.0 < trun,"Test (normal mode) runs to fast: #{trun}, lower limit 2")
     assert(trun < 3  ,"Test (normal mode) runs to slow: #{trun}, upper limit 3")
     # with 8 threads
     tstart = Time.new
-    puts IO.popen(cmd[8,filename]).read
+    puts IO.popen(prunCall(8,filename)).read
     tend = Time.new
     trun = tend - tstart
     assert(1.0 < trun,"Test (debug mode) runs to fast: #{trun}, lower limit 1")
     assert(trun < 2.0,"Test (debug mode) runs to slow: #{trun}, lower limit 2")
     # test in normal mode
     tstart = Time.new
-    puts IO.popen(cmd[8,filename]).read
+    puts IO.popen(prunCall(8,filename)).read
     tend = Time.new
     trun = tend - tstart
     assert(1.0 < trun,"Test (debug mode) runs to fast: #{trun}, lower limit 1")
     assert(trun < 2.0,"Test (debug mode) runs to slow: #{trun}, lower limit 2")
+  end
+  def test_prun_crash_on_empty_lines
+    tf = Tempfile.new("jobQueueTest")
+    tp = tf.path
+     tf.write("date\n")
+     tf.write("ls $HOME\n")
+     tf.write( "\n")
+     tf.write( "pwd\n")
+     tf.close
+     puts tp
+     puts IO.popen("cat #{tp}").read
+     puts IO.popen(prunCall(2,tp)).read
   end
 
   if 'thingol' == `hostname`.chomp
