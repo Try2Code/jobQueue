@@ -39,7 +39,7 @@ module C
   end
 end
 
-class TestJobQueue < Test::Unit::TestCase
+class TestJobQueue < Minitest::Test
 
   def setup
     @jq    = JobQueue.new(NTHREDs)
