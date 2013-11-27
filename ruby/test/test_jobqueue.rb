@@ -1,5 +1,5 @@
 $:.unshift File.join(File.dirname(__FILE__),"..","lib")
-require 'test/unit'
+require 'minitest/autorun'
 require 'jobqueue'
 require 'tempfile'
 
@@ -39,7 +39,7 @@ module C
   end
 end
 
-class TestJobQueue < Test::Unit::TestCase
+class TestJobQueue < Minitest::Test
 
   def setup
     @jq    = JobQueue.new(NTHREDs)
