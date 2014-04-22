@@ -126,7 +126,6 @@ class JobQueueTest(unittest.TestCase):
     pool.close()
     pool.join()
 
-
   def test_mpQueuePlot(self):
     """Test mp queue with outer function definition"""
     mpq = mpJobQueue(12)
