@@ -106,6 +106,6 @@ jobQueue use the BSD License
 
 Author::   Ralf Mueller <stark.dreamdetective@gmail.com>
 Requires:: Ruby 1.9 or later
-License::  Copyright 2011-2013 by Ralf Mueller
+License::  Copyright 2011-2014 by Ralf Mueller
            Released under BSD-style license.  See the LICENSE
            file included in the distribution.
