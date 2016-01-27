@@ -1,3 +1,4 @@
+require 'benchmark'
 require 'benchmark/ips'
 $:.unshift File.join(File.dirname(__FILE__),"..","lib")
 require 'jobqueue'
@@ -59,4 +60,13 @@ Benchmark.ips do |x|
   x.report('JobQueue.run - with results') { _jqR.run }
   x.report('Queue.run - with results') { _pqR.run(10) }
   x.compare!
+end if false
+
+n=10000
+nworker = 10
+jq = JobQueue.new(nworker)
+qp = Queue.new
+Benchmark.bm do |x|
+  x.report("JobQueue     :") { n.times {|i| jq.push { Math.sin((i**3).to_f)} ; jq.run} }
+  x.report("ParallelQueue:") { n.times {|i| pq.push { Math.sin((i**3).to_f)} ; pq.run(nworker)} }
 end
