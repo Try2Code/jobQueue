@@ -11,7 +11,7 @@ class Queue
   end
   def run(workers=processor_count)
     qpush(Parallel::Stop)
-    Parallel.each(self,:in_threads => workers) {|task|
+    Parallel.map(self,:in_threads => workers) {|task|
       if task.size > 1
         if task[0].kind_of? Proc
           # Expects proc/lambda with arguments, e.g. [mysqrt,2.789]
