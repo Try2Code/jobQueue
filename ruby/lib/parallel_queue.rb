@@ -6,7 +6,7 @@ class ParallelQueue < Queue
     super(item   ) unless item.empty?
     super([block]) unless block.nil?
   end
-  def run(workers=9)
+  def run(workers=Parallel::ProcessorCount.processor_count)
     parent_push(Parallel::Stop)
     Parallel.each(self,:in_threads => workers) {|task|
       if task.size > 1
@@ -23,5 +23,4 @@ class ParallelQueue < Queue
       end
     }
   end
-# alias_method :push, :parent_push
 end
