@@ -16,7 +16,7 @@ class TestParallelQueue < Minitest::Test
       }
     }
     q.run(10)
-    pp results
+    #pp results
     assert_equal(10,results.size)
   end
 
@@ -27,6 +27,12 @@ class TestParallelQueue < Minitest::Test
     q.push(myProc,4.0)
     q.push(Math,:sqrt,16.0)
     q.push(Math,:sqrt,529.0)
+    q.run
+  end
+  def test_proc_more_parameters
+    q = ParallelQueue.new
+    norm = lambda {|x,y| Math.sqrt(x*x + y*y)}
+    100.times { q.push(norm,rand,rand)}
     q.run
   end
 end
