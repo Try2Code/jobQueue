@@ -1,12 +1,15 @@
 require 'thread'
 require 'parallel'
+
+include Parallel::ProcessorCount
+
 class ParallelQueue < Queue
   alias :parent_push :push
   def push (*item, &block)
     super(item   ) unless item.empty?
     super([block]) unless block.nil?
   end
-  def run(workers=Parallel::ProcessorCount.processor_count)
+  def run(workers=processor_count)
     parent_push(Parallel::Stop)
     Parallel.each(self,:in_threads => workers) {|task|
       if task.size > 1
