@@ -3,14 +3,14 @@ require 'parallel'
 
 include Parallel::ProcessorCount
 
-class ParallelQueue < Queue
-  alias :parent_push :push
+class Queue
+  alias :qpush :push
   def push (*item, &block)
-    super(item   ) unless item.empty?
-    super([block]) unless block.nil?
+    qpush(item   ) unless item.empty?
+    qpush([block]) unless block.nil?
   end
   def run(workers=processor_count)
-    parent_push(Parallel::Stop)
+    qpush(Parallel::Stop)
     Parallel.each(self,:in_threads => workers) {|task|
       if task.size > 1
         if task[0].kind_of? Proc

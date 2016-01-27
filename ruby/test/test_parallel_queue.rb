@@ -6,23 +6,25 @@ require 'pp'
 class TestParallelQueue < Minitest::Test
 
   def test_block
-    q = ParallelQueue.new
+    q = Queue.new
     results = []
     lock = Mutex.new
-    10.times { 
+    actions = 9999
+    actions.times {
       q.push { 
-        a = Math.sin(rand()*Math::PI)
+        a = Math.sin((0.1+rand()))
         lock.synchronize {results << a}
       }
     }
     q.run(10)
-    #pp results
-    assert_equal(10,results.size)
+
+    assert_equal(actions,results.size)
+    results.each {|r| assert(0.01 < r,"found results below lower boundary") }
   end
 
   def test_proc
     # drawback: no results with this kind of items in queue
-    q = ParallelQueue.new
+    q = Queue.new
     myProc = lambda {|r| Math.sqrt(r)}
     q.push(myProc,4.0)
     q.push(Math,:sqrt,16.0)
@@ -30,9 +32,9 @@ class TestParallelQueue < Minitest::Test
     q.run
   end
   def test_proc_more_parameters
-    q = ParallelQueue.new
-    norm = lambda {|x,y| Math.sqrt(x*x + y*y)}
-    100.times { q.push(norm,rand,rand)}
+    q = Queue.new
+    norm = lambda {|x,y| puts Math.sqrt(x*x + y*y)}
+    11.times { q.push(norm,rand,rand)}
     q.run
   end
 end
