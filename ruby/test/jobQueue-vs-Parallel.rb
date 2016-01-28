@@ -1,5 +1,7 @@
 require 'benchmark'
 require 'benchmark/ips'
+require 'pp'
+require 'tempfile'
 $:.unshift File.join(File.dirname(__FILE__),"..","lib")
 require 'jobqueue'
 require 'parallel_queue'
@@ -62,11 +64,34 @@ Benchmark.ips do |x|
   x.compare!
 end if false
 
-n=10000
+n=500000
 nworker = 10
 jq = JobQueue.new(nworker)
 qp = Queue.new
+
+n.times {|i| 
+    jq.push { 
+#     file = Tempfile.new; file.close; file.unlink
+      Math.sin((i**3).to_f)
+    }
+}
+n.times {|i| 
+    pq.push { 
+#     file = Tempfile.new; file.close; file.unlink
+      Math.sin((i**3).to_f);
+    }
+}
+
+input = (0..n).to_a
 Benchmark.bm do |x|
-  x.report("JobQueue     :") { n.times {|i| jq.push { Math.sin((i**3).to_f)} ; jq.run} }
-  x.report("ParallelQueue:") { n.times {|i| pq.push { Math.sin((i**3).to_f)} ; pq.run(nworker)} }
+  x.report("JobQueue     :") {     jq.run }
+
+  x.report("ParallelQueue:") {     pq.run(nworker) }
+
+  x.report("Parallel     :") { 
+    r = Parallel.map(input,:in_threads => nworker) {|i|
+#     file = Tempfile.new; file.close; file.unlink
+      Math.sin((i**3).to_f)
+    }
+  }
 end
