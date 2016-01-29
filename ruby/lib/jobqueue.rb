@@ -1,17 +1,20 @@
 require 'thread'
 require 'open3'
+require 'parallel'
 # ==============================================================================
-# Author: Ralf Mueller, ralf.mueller@zmaw.de
+# Author: Ralf Mueller, ralf.mueller@mpimet.mpg.de
 #         suggestions from Robert Klemme (https://www.ruby-forum.com/topic/68001#86298)
 #
 # ==============================================================================
 # Sized Queue for limiting the number of parallel jobs
 # ==============================================================================
+
+include Parallel::ProcessorCount
 class JobQueue
   attr_reader :workers, :threads
 
   # Create a new queue qith a given number of worker threads
-  def initialize(nWorkers=JobQueue.maxnumber_of_processors,debug=:off)
+  def initialize(nWorkers=processor_count,debug=:off)
     @workers = nWorkers
     @queue   = Queue.new
     @debug   = debug
@@ -31,8 +34,8 @@ class JobQueue
   end
 
   # Start workers to run through the queue
-  def run
-    @threads = (1..@workers).map {|i|
+  def run(threads2run=@workers)
+    @threads = (1..threads2run).map {|i|
       Thread.new(@queue) {|q|
         until ( q == ( task = q.deq ) )
           if task.size > 1
@@ -52,40 +55,6 @@ class JobQueue
     }
     @threads.size.times { @queue.enq @queue}
     @threads.each {|t| t.join}
-  end
-
-  # Get the maximum number of parallel runs
-  def JobQueue.maxnumber_of_processors
-    case RUBY_ENGINE
-    when 'jruby'
-      require 'java'
-      return java.lang.Runtime.getRuntime.availableProcessors
-    when 'ironruby'
-      return System::Environment.ProcessorCount
-    when 'ruby','rbx'
-      case  RUBY_PLATFORM
-      when /linux/
-        return `cat /proc/cpuinfo | grep processor | wc -l`.to_i
-      when /darwin/
-        return `sysctl -n hw.logicalcpu`.to_i
-      when /(win32|mingw|cygwin)/
-        # this works for windows 2000 or greater
-        require 'win32ole'
-        wmi = WIN32OLE.connect("winmgmts://")
-        wmi.ExecQuery("select * from Win32_ComputerSystem").each do |system|
-          begin
-            processors = system.NumberOfLogicalProcessors
-          rescue
-            processors = 0
-          end
-          return [system.NumberOfProcessors, processors].max
-        end
-      when /powerpc-aix/
-        return IO.popen("lsdev -Cc processor").readlines.size
-        # alternative, but slover: IO.popen("prtconf").readlines.grep(/Number of processors/i).first.split(" ").last.to_i
-      end
-    end
-    raise "Cannot determine the number of available Processors for RUBY_PLATFORM:'#{RUBY_PLATFORM}' and RUBY_ENGINE:#{RUBY_ENGINE}"
   end
 end
 
