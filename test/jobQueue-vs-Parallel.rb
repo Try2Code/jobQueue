@@ -1,12 +1,12 @@
 require 'benchmark'
 require 'jobqueue'
 $:.unshift File.join(File.dirname(__FILE__),"..","lib")
-require 'parallel_queue'
+require 'parallelQueue'
 
 n         = 199999
 nworker   = 4
 jQ        = JobQueue.new(nworker)
-pQ        = Queue.new
+pQ        = ParallelQueue.new
 resultsJQ = []
 lock      = Mutex.new
 

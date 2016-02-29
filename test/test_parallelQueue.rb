@@ -54,4 +54,14 @@ class TestParallelQueue < Minitest::Test
       results.sort
     )
   end
+
+  def test_run_methods
+    qA = ParallelQueue.new
+    qB = ParallelQueue.new
+
+
+    qA.push {
+      require 'bigdecimal'
+      b = Math.exp
+  end
 end
