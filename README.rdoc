@@ -1,19 +1,30 @@
-= JobQueue - Let run your jobs in parallel
+= JobQueue / ParallelQueue - Let run your jobs in parallel
 
-This package contains jobQueue: 
-  * A simple class to parallalize your work on a user definend number of threads
-  * A ruby script, which uses the above class to run each line of a shell script
+This repository containt JobQueue and ParallelQueue. Both libraries provide
+similar functionality: Push arbitrary blocks af code to a Queue and execute
+them on a user-defined number of Threads.
 
-jobQueue can do the following things:
+JobQueue offers no support for returning the results of the blocks, i.e. the
+user has to collect them. ParallelQueue is based on 'parallel'
+(https://github.com/grosser/parallel, https://rubygems.org/gems/parallel) which
+handles the return values internally and users can get the results
+out-of-the-box. 
+
+For the moment I keep both classes, but the ParallelQueue class is a lot
+cleaner and also includes the slightly faster JobQueue implentation. That's why
+I'll remove the JobQueue class sometime in the future.
+
+jobQueue/parallelQueue can do the following things:
 
 * Run blocks, Procs and Lambdas
 * Run instance and class methods
-* Run shell commands
-* Respect user definded locks
+* Respect user definded locks (not needed on ParallelQueue)
+* Parallelizing System commands is removed, because it can easily be implemented with 'parallel'
 
 I started a python2 implementation of this, which can be installed via pip
-(https://pypi.python.org/pypi/jobqueue). When its maature enough, I will use
-the ruby version numbers for it.
+(https://pypi.python.org/pypi/jobqueue). But I stopped because the
+multiprocessing.Pool module nearly does what I need ... and blocks do _not_
+exist in python ;-)
 
 == Installation
 
@@ -22,6 +33,7 @@ the ruby version numbers for it.
 Download and install jobQueue with the following.
 
    gem install jobQueue
+   gem install parallelQueue
 
 === Requirements
 
@@ -34,6 +46,10 @@ JobQueue requires Ruby only, but versions 1.9.x are needed to make use of system
 Create a JobQueue with nThreads worker with:
 
   jq = JobQueue.new(nThreads)
+  pq = ParallelQueue.new
+
+ParallelQueue does not need the number of workers in the constructor. It has to
+be provided in the run methods.
 
 Use its push method to put in something to do
 
@@ -59,24 +75,9 @@ Use its push method to put in something to do
 To start the workers, call 
 
   jq.run
+  qp.run(8)
 
 That's it. You might have look at tests, that come with the jobQueue gem.
-
-=== Parallelize system commands
-
-Use a separate class for this and push string to it:
-
-  jq = SystemJobs.new(nThreads)
-  jq.push('find ./src -name "*.rb"','find ./downloads -name "*.rb"')
-
-will start 2 parallel searches for ruby files. This is implemented in the
-prun.rb script, which comes with the jobQueue gem. To run each line of a shell
-script on 10 threads, use:
-
-  prun.rb -j 10 jobs.sh
-
-The '-j' switch is optional. Default is the maximum number of cores. The script
-accepts multiple files and processes one after another. Try '-h' for documentation.
 
 == Support, Issues, Bugs, ...
 
@@ -84,10 +85,16 @@ please use personal mail, ruby-lang mailing list or github
 
 == Changelog
 
+JobQueue:
+
 * 1.0.11: prun.rb now ignores empty lines
 * 1.0.10: more flexible logging control (new switches '-l' and '-b')
 * 1.0.9: print out stdout and stderr from the jobs given to prun.rb, use '-D' to avoid printing
 * 1.0.8: support AIX for getting the maximum number of processors, improve processor count for jruby and rbx
+
+ParallelQueue:
+
+* 1.0.0: parallel-based child-class of Queue, JobQueue.run is implementation as justRun
 
 == Credits
 
@@ -96,6 +103,7 @@ please use personal mail, ruby-lang mailing list or github
 == License
 
 jobQueue use the BSD License
+parallelQueue use the IRC License
 
 :include LICENSE
 
