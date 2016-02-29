@@ -1,7 +1,7 @@
 require 'minitest/autorun'
-$:.unshift File.join(File.dirname(__FILE__),"..","lib")
 require 'parallel'
-require 'parallel/queue'
+$:.unshift File.join(File.dirname(__FILE__),"..","lib")
+require 'parallelQueue'
 
 class TestParallelQueue < Minitest::Test
 
