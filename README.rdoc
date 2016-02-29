@@ -1,7 +1,7 @@
 = JobQueue / ParallelQueue - Let run your jobs in parallel
 
 This repository containt JobQueue and ParallelQueue. Both libraries provide
-similar functionality: Push arbitrary blocks af code to a Queue and execute
+similar functionality: Push arbitrary blocks of code to a Queue and execute
 them on a user-defined number of Threads.
 
 JobQueue offers no support for returning the results of the blocks, i.e. the
@@ -75,9 +75,10 @@ Use its push method to put in something to do
 To start the workers, call 
 
   jq.run
-  qp.run(8)
+  results = qp.run(8)
+  pq.justRun(8)        # no results
 
-That's it. You might have look at tests, that come with the jobQueue gem.
+That's it. You might have look at tests.
 
 == Support, Issues, Bugs, ...
 
