@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'bigdecimal'
 require 'parallel'
 $:.unshift File.join(File.dirname(__FILE__),"..","lib")
 require 'parallelQueue'
@@ -53,15 +54,5 @@ class TestParallelQueue < Minitest::Test
       [1.0,1.41,1.73,2.0, 4.0, 7.71, 11.19, 13.36, 14.1, 14.48, 14.7, 14.78, 14.85, 23.0, 898.6, 954.56, 989.45, 1001.29, 1007.26, 1010.85, 1012.05, 1013.25],
       results.sort
     )
-  end
-
-  def test_run_methods
-    qA = ParallelQueue.new
-    qB = ParallelQueue.new
-
-
-    qA.push {
-      require 'bigdecimal'
-      b = Math.exp
   end
 end

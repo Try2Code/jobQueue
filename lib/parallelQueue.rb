@@ -5,7 +5,8 @@ require 'parallel'
 #
 # ==============================================================================
 
-# ParallelQueue is nothing but a regular queue with the ability to store blocks or methods (plus aruments)
+# ParallelQueue is nothing but a regular queue with the ability to store blocks
+# or methods (plus aruments)
 class ParallelQueue < Queue
   alias :queue_push :push
   include Parallel::ProcessorCount
@@ -29,7 +30,8 @@ class ParallelQueue < Queue
           # [myproc,x,y,z]
           task[0].call(*task[1..-1])
         else
-          # expect an object in task[0] and one of its methods with arguments in task[1] as a symbol
+          # expect an object in task[0] and one of its methods with arguments
+          # in task[1] as a symbol
           # e.g. [a,[:attribute=,1] or
           # Math,:exp,0
           task[0].send(task[1],*task[2..-1])
@@ -50,7 +52,8 @@ class ParallelQueue < Queue
               # Expects proc/lambda with arguments, e.g. [mysqrt,2.789]
               task[0].call(*task[1..-1])
             else
-              # expect an object in task[0] and one of its methods with arguments in task[1] as a symbol
+              # expect an object in task[0] and one of its methods with
+              # arguments in task[1] as a symbol
               # e.g. [a,[:attribute=,1]
               task[0].send(task[1],*task[2..-1])
             end
