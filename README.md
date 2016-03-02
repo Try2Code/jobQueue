@@ -1,4 +1,4 @@
-= JobQueue / ParallelQueue - Let run your jobs in parallel
+# JobQueue / ParallelQueue - Let run your jobs in parallel
 
 This repository containt JobQueue and ParallelQueue. Both libraries provide
 similar functionality: Push arbitrary blocks of code to a Queue and execute
@@ -26,22 +26,22 @@ I started a python2 implementation of this, which can be installed via [pip]
 multiprocessing.Pool module nearly does what I need ... and blocks do _not_
 exist in python ;-)
 
-== Installation
+## Installation
 
-=== Gem Installation
+### Gem Installation
 
 Download and install jobQueue with the following.
 
    gem install jobQueue
    gem install parallelQueue
 
-=== Requirements
+### Requirements
 
 JobQueue requires Ruby only, but versions 1.9.x are needed to make use of system threads.
 
-== Usage
+## Usage
 
-=== Parallelize Ruby's blocks, procs, lambdas and things
+### Parallelize Ruby's blocks, procs, lambdas and things
 
 Create a JobQueue with nThreads worker with:
 
@@ -80,11 +80,11 @@ To start the workers, call
 
 That's it. You might have look at tests.
 
-== Support, Issues, Bugs, ...
+## Support, Issues, Bugs, ...
 
 please use personal mail, ruby-lang mailing list or github
 
-== Changelog
+## Changelog
 
 JobQueue:
 
@@ -97,11 +97,11 @@ ParallelQueue:
 
 * 1.0.0: parallel-based child-class of Queue, JobQueue.run is implementation as justRun
 
-== Credits
+## Credits
 
 [<b>Robert Klemme</b>] For the first hints: https://www.ruby-forum.com/topic/68001#86298
 
-== License
+## License
 
 jobQueue use the BSD License
 parallelQueue use the IRC License
