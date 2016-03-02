@@ -62,15 +62,15 @@ Use its push method to put in something to do
 
 * For procs and lambdas: 
     
-    jp.push(myProc,arg0,arg1,...)
+   ` jp.push(myProc,arg0,arg1,...)`
 
 * For object methods:
 
-    jq.push([myObject,[:method,arg0,arg1,...])
+    `jq.push([myObject,[:method,arg0,arg1,...])`
 
 * Same code can be used for class methods:
 
-    jq.push(myClass,[:myClassMethod,arg0,arg1,...])
+    `jq.push(myClass,[:myClassMethod,arg0,arg1,...])`
 
 To start the workers, call 
 
