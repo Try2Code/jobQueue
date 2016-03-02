@@ -73,11 +73,13 @@ Use its push method to put in something to do
     jq.push(myClass,[:myClassMethod,arg0,arg1,...])
 
 To start the workers, call 
+
 `
   jq.run
   results = qp.run(8)
   pq.justRun(8)        # no results
 `
+
 That's it. You might have look at tests.
 
 ## Support, Issues, Bugs, ...
