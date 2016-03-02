@@ -54,11 +54,13 @@ be provided in the run methods.
 Use its push method to put in something to do
 
 * For blocks:
+```ruby
     jq.push do
       myObject.method0(...)
       myObject.method1(...)
       myObject.method3(...)
     end
+```
 
 * For procs and lambdas: 
     
