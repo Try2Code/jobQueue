@@ -31,10 +31,10 @@ exist in python ;-)
 ### Gem Installation
 
 Download and install jobQueue with the following.
-
+```
    gem install jobQueue
    gem install parallelQueue
-
+```
 ### Requirements
 
 JobQueue requires Ruby only, but versions 1.9.x are needed to make use of system threads.
@@ -44,10 +44,10 @@ JobQueue requires Ruby only, but versions 1.9.x are needed to make use of system
 ### Parallelize Ruby's blocks, procs, lambdas and things
 
 Create a JobQueue with nThreads worker with:
-
+```ruby
   jq = JobQueue.new(nThreads)
   pq = ParallelQueue.new
-
+```
 ParallelQueue does not need the number of workers in the constructor. It has to
 be provided in the run methods.
 
@@ -73,7 +73,7 @@ Use its push method to put in something to do
 
 * Same code can be used for class methods:
 ```ruby
-    `jq.push(myClass,[:myClassMethod,arg0,arg1,...])
+    jq.push(myClass,[:myClassMethod,arg0,arg1,...])
 ```
 
 To start the workers, call 
