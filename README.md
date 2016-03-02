@@ -5,7 +5,7 @@ similar functionality: Push arbitrary blocks of code to a Queue and execute
 them on a user-defined number of Threads.
 
 JobQueue offers no support for returning the results of the blocks, i.e. the
-user has to collect them. ParallelQueue is based on 'parallel'
+user has to collect them. ParallelQueue is based on [parallel]
 (https://github.com/grosser/parallel, https://rubygems.org/gems/parallel) which
 handles the return values internally and users can get the results
 out-of-the-box. 
@@ -21,7 +21,7 @@ jobQueue/parallelQueue can do the following things:
 * Respect user definded locks (not needed on ParallelQueue)
 * Parallelizing System commands is removed, because it can easily be implemented with 'parallel'
 
-I started a python2 implementation of this, which can be installed via pip
+I started a python2 implementation of this, which can be installed via [pip]
 (https://pypi.python.org/pypi/jobqueue). But I stopped because the
 multiprocessing.Pool module nearly does what I need ... and blocks do _not_
 exist in python ;-)
