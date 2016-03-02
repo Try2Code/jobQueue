@@ -63,24 +63,25 @@ Use its push method to put in something to do
 ```
 
 * For procs and lambdas: 
-    
-   ` jp.push(myProc,arg0,arg1,...)`
-
+```ruby    
+    jp.push(myProc,arg0,arg1,...)
+```
 * For object methods:
-
-    `jq.push([myObject,[:method,arg0,arg1,...])`
+```ruby
+    jq.push([myObject,[:method,arg0,arg1,...])
+```
 
 * Same code can be used for class methods:
-
-    `jq.push(myClass,[:myClassMethod,arg0,arg1,...])`
+```ruby
+    `jq.push(myClass,[:myClassMethod,arg0,arg1,...])
+```
 
 To start the workers, call 
-
-`
+```ruby
   jq.run
   results = qp.run(8)
   pq.justRun(8)        # no results
-`
+```
 
 That's it. You might have look at tests.
 
