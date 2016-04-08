@@ -1,6 +1,6 @@
 # JobQueue / ParallelQueue - Let run your jobs in parallel
 
-This repository containt JobQueue and ParallelQueue. Both libraries provide
+This repository contains JobQueue and ParallelQueue. Both libraries provide
 similar functionality: Push arbitrary blocks of code to a Queue and execute
 them on a user-defined number of Threads.
 
