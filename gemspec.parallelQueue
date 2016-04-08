@@ -5,14 +5,14 @@ spec = Gem::Specification.new do |s|
   s.version           = '1.0.0'
   s.platform          = Gem::Platform::RUBY
   s.files             = ["lib/parallelQueue.rb"] + ["gemspec.parallelQueue","LICENSE","README.rdoc"]
-  s.description       = "Extension of 'parallel': Interface for pushung blocks"
+  s.description       = "Extension of the 'parallel' gem: Interface for pushing blocks"
   s.summary           = "This is a small extension to the 'parallel' library. It \
-                        allows to push abitrary blocks to a Queue and execute them in parallel, \
-                        whereas 'parallel' needs predefined lambdas"
+                         allows to push abitrary blocks to a Queue and execute them in parallel, \
+                         whereas 'parallel' needs predefined lambdas"
   s.author            = "Ralf Mueller"
   s.email             = "stark.dreamdetective@gmail.com"
   s.homepage          = "https://github.com/Try2Code/jobQueue"
-  s.extra_rdoc_files          = ["README.rdoc","LICENSE"]
+  s.extra_rdoc_files  = ["README.rdoc","LICENSE"]
   s.license           = "ISC" #BSD-2-Clause
   s.test_file         = "test/test_parallelQueue.rb"
   s.required_ruby_version = ">= 1.8"
