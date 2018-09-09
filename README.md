@@ -110,16 +110,3 @@ ParallelQueue:
 
 jobQueue use the BSD License
 parallelQueue use the IRC License
-
-:include LICENSE
-
-
----
-
-= Other stuff
-
-Author::   Ralf Mueller <stark.dreamdetective@gmail.com>
-Requires:: Ruby 1.9 or later
-License::  Copyright 2011-2016 by Ralf Mueller
-           Released under BSD-style license.  See the LICENSE
-           file included in the distribution.
